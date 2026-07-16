@@ -9,7 +9,8 @@ class ObstacleAvoidance:
         self.count_backward = 0
         self.count_turn = 0
         self.max_backward = 10
-        self.max_turn = 10
+        self.min_turn = 5
+        self.max_turn = 15
         self.backward = False
         self.max_prox_center = 3500
         self.max_prox_side = 1500
@@ -23,10 +24,12 @@ class ObstacleAvoidance:
             if prox[2] >= self.max_prox_center :
                 self.backward = True
                 self.turn_direction = None
+                self.count_turn = 0
                 return -self.wheel_velocity, -self.wheel_velocity
             elif prox[1] >= self.max_prox_center and prox[3] >= self.max_prox_center:
                 self.backward = True
                 self.turn_direction = None
+                self.count_turn = 0
                 return -self.wheel_velocity, -self.wheel_velocity
             elif prox[0] >= self.max_prox_side or prox[1] >= self.max_prox_side or prox[3] >= self.max_prox_side or prox[4] >= self.max_prox_side:
                 if self.turn_direction is not None and self.count_turn < self.max_turn:
@@ -35,6 +38,11 @@ class ObstacleAvoidance:
                         return self.wheel_velocity, -self.wheel_velocity
                     else:
                         return -self.wheel_velocity, self.wheel_velocity
+                elif self.turn_direction is not None and self.count_turn >= self.max_turn:
+                    self.backward = True
+                    self.turn_direction = None
+                    self.count_turn = 0
+                    return -self.wheel_velocity, -self.wheel_velocity
                 else:
                     self.count_turn = 0
                     if left > right:
@@ -43,6 +51,12 @@ class ObstacleAvoidance:
                     else:
                         self.turn_direction = "left"
                         return -self.wheel_velocity, self.wheel_velocity
+            elif self.turn_direction is not None and self.count_turn < self.min_turn:
+                self.count_turn += 1
+                if self.turn_direction == "right":
+                    return self.wheel_velocity, -self.wheel_velocity
+                else:
+                    return -self.wheel_velocity, self.wheel_velocity
             else: 
                 self.turn_direction = None
                 self.count_turn = 0
