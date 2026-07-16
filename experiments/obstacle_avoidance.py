@@ -1,8 +1,8 @@
 import asyncio
 import math
 
-from behaviours.base_behaviours.obstacle_avoidance import ObstacleAvoidance
-from utils.geometry import SENSOR_ANGLES
+from behaviours.obstacle_avoidance import ObstacleAvoidance
+# from utils.geometry import SENSOR_ANGLES
 
 class ObstacleAvoidanceExperiment:
 
@@ -15,16 +15,14 @@ class ObstacleAvoidanceExperiment:
         self.paused = False
 
         # Parameters
-        self.delta = self.config.get("delta", 1000)
         self.wheel_velocity = self.config.get("wheel_velocity", 100)
 
         self.turning_left = 0
 
-        self.obstacle_avoidance = ObstacleAvoidance(wheel_velocity=self.wheel_velocity,
-                                                    delta=self.delta)
+        self.obstacle_avoidance = ObstacleAvoidance(wheel_velocity=self.wheel_velocity)
 
         # Approximate Thymio proximity sensor angles (radians)
-        self.sensor_angles = SENSOR_ANGLES
+        # self.sensor_angles = SENSOR_ANGLES
 
     async def run(self):
 
