@@ -40,7 +40,8 @@ class ColorRecognitionExperiment:
 
             if self.logger:
                 self.logger.log(
-                    state={"proximity": prox},
+                    state={"proximity": prox,
+                           "reflected": ground},
                     command={
                         "left_motor": left,
                         "right_motor": right,

@@ -13,7 +13,7 @@ class ObstacleAvoidance:
         self.max_turn = 15
         self.backward = False
         self.max_prox_center = 3000
-        self.max_prox_side = 1500
+        self.max_prox_side = 1000
         self.turn_direction = None
 
 

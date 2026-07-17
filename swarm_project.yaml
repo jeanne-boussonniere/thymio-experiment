@@ -5,3 +5,5 @@ version: 1.0
 experiments:
   obstacle_avoidance:
     class: experiments.obstacle_avoidance.ObstacleAvoidanceExperiment
+  color_recognition:
+    class: experiments.color_recognition.ColorRecognitionExperiment
