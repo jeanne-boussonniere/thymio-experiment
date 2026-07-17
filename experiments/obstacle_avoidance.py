@@ -15,7 +15,7 @@ class ObstacleAvoidanceExperiment:
         self.paused = False
 
         # Parameters
-        self.wheel_velocity = self.config.get("wheel_velocity", 100)
+        self.wheel_velocity = self.config.get("wheel_velocity", 200)
 
         self.turning_left = 0
 
