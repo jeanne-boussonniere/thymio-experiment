@@ -1,8 +1,9 @@
 import asyncio
 
 from behaviours.obstacle_avoidance import ObstacleAvoidance
+from behaviours.color_recognition import ColorRecognition
 
-class ObstacleAvoidanceExperiment:
+class ColorRecognitionExperiment:
 
     def __init__(self, robot, config=None, logger=None):
         self.robot = robot
@@ -16,6 +17,7 @@ class ObstacleAvoidanceExperiment:
         self.wheel_velocity = self.config.get("wheel_velocity", 200)
 
         self.obstacle_avoidance = ObstacleAvoidance(wheel_velocity=self.wheel_velocity)
+        self.color_recognition = ColorRecognition()
 
     async def run(self):
 
@@ -30,6 +32,10 @@ class ObstacleAvoidanceExperiment:
 
             left, right = self.obstacle_avoidance.step_motion(prox)
 
+            ground = await self.robot.proximity_ground_reflected()
+
+            color = self.color_recognition.find_color(ground)
+
             await self.robot.drive(left, right)
 
             if self.logger:
@@ -38,6 +44,7 @@ class ObstacleAvoidanceExperiment:
                     command={
                         "left_motor": left,
                         "right_motor": right,
+                        "color": color
                     },
                 )
 
