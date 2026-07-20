@@ -34,7 +34,7 @@ class ColorRecognitionExperiment:
 
             ground = await self.robot.proximity_ground_reflected()
 
-            color = self.color_recognition.find_color(ground)
+            _, color = self.color_recognition.find_color(ground)
 
             await self.robot.drive(left, right)
 
