@@ -39,11 +39,11 @@ class ObstacleAvoidance:
                 if self.turn_direction is not None and self.count_turn < self.max_turn:
                     self.count_turn += 1
                     if self.turn_direction == "right":
-                        intensity = max(prox[0], prox[1])
+                        intensity = max(prox[0], prox[1],prox[2])
                         factor = self._factor(intensity)
                         return self.wheel_velocity, self.wheel_velocity * (1 - 2 * factor)
                     else:
-                        intensity = max(prox[3], prox[4])
+                        intensity = max(prox[2],prox[3], prox[4])
                         factor = self._factor(intensity)
                         return self.wheel_velocity * (1 - 2 * factor), self.wheel_velocity
                 elif self.turn_direction is not None and self.count_turn >= self.max_turn:
@@ -54,24 +54,24 @@ class ObstacleAvoidance:
                 else:
                     self.count_turn = 0
                     if left > right:
-                        intensity = max(prox[0], prox[1])
+                        intensity = max(prox[0], prox[1],prox[2])
                         factor = self._factor(intensity)
                         self.turn_direction = "right"
                         return self.wheel_velocity, self.wheel_velocity * (1 - 2 * factor)
                     else:
-                        intensity = max(prox[3], prox[4])
+                        intensity = max(prox[2],prox[3], prox[4])
                         factor = self._factor(intensity)
                         self.turn_direction = "left"
                         return self.wheel_velocity * (1 - 2 * factor), self.wheel_velocity
             elif self.turn_direction is not None and self.count_turn < self.min_turn:
                 self.count_turn += 1
                 if self.turn_direction == "right":
-                    intensity = max(prox[0], prox[1])
+                    intensity = max(prox[0], prox[1],prox[2])
                     factor = self._factor(intensity)
                     return self.wheel_velocity, self.wheel_velocity * (1 - 2 * factor)
                 else:
-                    intensity = max(prox[3], prox[4])
-                    factor = (intensity - self.max_prox_side) / (4500 - self.max_prox_side)
+                    intensity = max(prox[2],prox[3], prox[4])
+                    factor = self._factor(intensity)
                     return self.wheel_velocity * (1 - 2 * factor), self.wheel_velocity
             else:  
                 self.turn_direction = None
