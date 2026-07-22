@@ -26,7 +26,7 @@ class ObstacleAvoidance:
                 self.turn_direction = None
                 self.count_turn = 0
                 return -self.wheel_velocity, -self.wheel_velocity
-            elif prox[1] >= self.max_prox_center and prox[3] >= self.max_prox_center:
+            elif left >= self.max_prox_center and right >= self.max_prox_center:
                 self.backward = True
                 self.turn_direction = None
                 self.count_turn = 0
