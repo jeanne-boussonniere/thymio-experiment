@@ -75,17 +75,27 @@ class ObstacleAvoidance:
             elif self.count_backward < self.max_backward and (prox[5] >= self.max_prox_side or prox[6] >= self.max_prox_side):
                 self.count_backward = self.max_backward
                 if left > right:
+                    self.turn_direction = "right"
                     return self.wheel_velocity, -self.wheel_velocity
                 else:
+                    self.turn_direction = "left"
                     return -self.wheel_velocity, self.wheel_velocity
             elif self.count_backward >= self.max_backward and self.count_backward < (self.max_backward + 5):
-                if left > right:
+                if self.turn_direction is None :
+                    if left > right:
+                        self.turn_direction = "right"
+                        return self.wheel_velocity, -self.wheel_velocity
+                    else:
+                        self.turn_direction = "left"
+                        return -self.wheel_velocity, self.wheel_velocity
+                elif self.turn_direction == "right" : 
                     return self.wheel_velocity, -self.wheel_velocity
-                else:
+                else : 
                     return -self.wheel_velocity, self.wheel_velocity
             else:
                 self.count_backward = 0
                 self.backward = False
+                self.turn_direction = None
                 return self.wheel_velocity, self.wheel_velocity
 
     def _factor(self, closer):
