@@ -47,10 +47,11 @@ class MessagingTestExperiment:
             )
  
             received = self.udp.receive_messages()
-            if received:
-                print(f"[TICK {self.tick}] reçu: {received}")
-            else:
-                print(f"[TICK {self.tick}] rien reçu")
+
+            if self.logger:
+                self.logger.log(
+                state={"message":received},
+                            )
  
             self.tick += 1
             await asyncio.sleep(1)

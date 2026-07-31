@@ -28,8 +28,8 @@ class SwarmUDPManager:
                 try:
                     payload = json.loads(data.decode('utf-8'))
                 except json.JSONDecodeError:
-                    continue  # ignore ce paquet, continue à lire les suivants
-                latest[addr[0]] = payload  # écrase l'ancien message de ce voisin
+                    continue  
+                latest[addr[0]] = payload 
         except BlockingIOError:
             pass
         return latest
