@@ -1,8 +1,8 @@
 class ColorRecognition:
     PATCHES = [
         {"index": 0, "average": 60, "eps": 14, "name": "black"},  
-        {"index": 1, "average": 875, "eps": 26, "name": "white"},  
-        {"index": 2, "average": 130, "eps": 16, "name": "brown"}   
+        {"index": 1, "average": 903, "eps": 11, "name": "white"},  
+        {"index": 2, "average": 145, "eps": 24, "name": "brown"}   
     ]
 
     def find_color(self, ground):
