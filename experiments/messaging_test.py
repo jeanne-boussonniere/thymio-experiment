@@ -50,7 +50,8 @@ class MessagingTestExperiment:
 
             if self.logger:
                 self.logger.log(
-                state={"message":received},
+                state={"message":str(received)},
+                command={}
                             )
  
             self.tick += 1
