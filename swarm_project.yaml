@@ -9,3 +9,5 @@ experiments:
     class: experiments.color_recognition.ColorRecognitionExperiment
   messaging_test:
     class: experiments.messaging_test.MessagingTestExperiment
+  sca_algorithm:
+    class: experiments.sca_algorithm.SCAAlgorithmExperiment
