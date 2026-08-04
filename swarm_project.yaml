@@ -10,4 +10,4 @@ experiments:
   messaging_test:
     class: experiments.messaging_test.MessagingTestExperiment
   sca_algorithm:
-    class: experiments.sca_algorithm.SCAAlgorithmExperiment
+    class: experiments.sca_algorithm.SCAExperiment
