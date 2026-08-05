@@ -91,7 +91,7 @@ class SCAExperiment:
                 if msg.get("id") in self.nearby_ids:
                     nearby_received[i] = msg
              
-            left_bias, right_bias, opinion, quality, authority = self.sca_algorithm.sca_tick(patch, nearby_received)
+            left_bias, right_bias, opinion, quality, rarity, authority, buffer = self.sca_algorithm.sca_tick(patch, nearby_received)
 
             self.udp.send_to_all(
                 {"id": self.short_id, 
@@ -114,7 +114,9 @@ class SCAExperiment:
                         "patch": patch,
                         "opinion": opinion,
                         "quality": quality,
-                        "authority": authority
+                        "rarity": rarity,
+                        "authority": authority,
+                        "buffer": buffer
                     },
                 )
 

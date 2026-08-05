@@ -64,7 +64,7 @@ class SCA :
         
         self._change_opinion(neighbours)
 
-        return 0, 0, self.opinion, self.quality, self.authority
+        return 0, 0, self.opinion, self.quality, self.rho, self.authority, self.buffer
 
     
     def _measure_quality(self, patch):
