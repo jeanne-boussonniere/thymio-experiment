@@ -68,7 +68,7 @@ class ObstacleAvoidance:
                 else:
                     self.turn_direction = "left"
                     return -self.wheel_velocity, self.wheel_velocity
-            elif self.count_backward >= self.max_backward and self.count_backward < (self.max_backward + 10):
+            elif self.count_backward >= self.max_backward and self.count_backward < (self.max_backward + 5):
                 if self.turn_direction is None :
                     if left > right:
                         self.turn_direction = "right"
