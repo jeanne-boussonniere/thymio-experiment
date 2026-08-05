@@ -64,7 +64,14 @@ class SCAExperiment:
             patch, _ = self.color_recognition.find_color(ground)
 
             await self.robot.send(self.short_id)
-            rx, _, _, _ = await self.robot.receive()
+
+            message = None
+            try:
+                message = await self.robot.receive()
+            except (TypeError, ValueError):
+                message = None
+
+            rx = int(message[0]) if message else None
 
             if rx:  
                 self.nearby_ids[rx] = self.tick
@@ -79,10 +86,10 @@ class SCAExperiment:
 
             received = self.udp.receive_messages()
 
-            nearby_received = []
-            for msg in received.values():
+            nearby_received = {}
+            for i, msg in received.items():
                 if msg.get("id") in self.nearby_ids:
-                    nearby_received.append(msg)
+                    nearby_received[i] = msg
              
             left_bias, right_bias, opinion, quality, authority = self.sca_algorithm.sca_tick(patch, nearby_received)
 
