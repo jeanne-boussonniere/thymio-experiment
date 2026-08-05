@@ -1,6 +1,7 @@
 import asyncio
 import os
 import socket
+import re
 
 from behaviours.obstacle_avoidance import ObstacleAvoidance
 from behaviours.color_recognition import ColorRecognition
@@ -19,6 +20,9 @@ class SCAExperiment:
         self.paused = False
 
         self.robot_id = socket.gethostname()
+        self.short_id = int(re.sub(r"\D", "", self.robot_id))
+
+
         coordinator_ip = os.getenv("SWARM_COORDINATOR", "10.15.2.63")
         coordinator_port = int(os.getenv("SWARM_COORDINATOR_PORT", "9100"))
         self.client = SwarmClient(coordinator_ip, coordinator_port)
@@ -30,6 +34,9 @@ class SCAExperiment:
         self.obstacle_avoidance = ObstacleAvoidance(wheel_velocity=self.wheel_velocity)
         self.color_recognition = ColorRecognition()
         self.sca_algorithm = SCA()
+
+        self.nearby_ids = {}       
+        self.NEARBY_WINDOW = 20
 
         self.tick = 0
 
@@ -51,19 +58,36 @@ class SCAExperiment:
                 continue
 
             prox = await self.robot.proximity_horizontal()
-
             left, right = self.obstacle_avoidance.step_motion(prox)
             
             ground = await self.robot.proximity_ground_reflected()
-
             patch, _ = self.color_recognition.find_color(ground)
 
+            await self.robot.send(self.short_id)
+            rx, _, _, _ = await self.robot.receive()
+
+            if rx:  
+                self.nearby_ids[rx] = self.tick
+
+            delete = []
+            for id, last_seen in self.nearby_ids.items():
+                if self.tick - last_seen > self.NEARBY_WINDOW:
+                    delete.append(id)
+
+            for id in delete:
+                del self.nearby_ids[id]
+
             received = self.udp.receive_messages()
+
+            nearby_received = []
+            for msg in received.values():
+                if msg.get("id") in self.nearby_ids:
+                    nearby_received.append(msg)
              
-            left_bias, right_bias, opinion, quality, authority = self.sca_algorithm.sca_tick(patch, received)
+            left_bias, right_bias, opinion, quality, authority = self.sca_algorithm.sca_tick(patch, nearby_received)
 
             self.udp.send_to_all(
-                {"id": self.robot_id, 
+                {"id": self.short_id, 
                  "tick": self.tick,  
                  "opinion": opinion, 
                  "quality": quality, 
