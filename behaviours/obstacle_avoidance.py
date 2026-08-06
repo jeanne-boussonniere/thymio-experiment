@@ -11,7 +11,8 @@ class ObstacleAvoidance:
         self.max_backward = 10
         self.max_turn = 15
         self.backward = False
-        self.max_prox = 3000
+        self.max_prox = 2500
+        self.max_side = 3500
         self.min_prox = 800
         self.turn_direction = None
 
@@ -22,7 +23,7 @@ class ObstacleAvoidance:
         closer = max(prox[:5])
         factor = self._factor(closer)
         if not self.backward: 
-            if closer >= self.max_prox or (left >= self.max_prox and right >= self.max_prox):
+            if closer >= self.max_prox or (left >= self.max_side and right >= self.max_side):
                 self.backward = True
                 self.turn_direction = None
                 self.count_turn = 0
