@@ -116,7 +116,8 @@ class SCAExperiment:
                         "rarity": rarity,
                         "authority": authority,
                         "buffer": buffer,
-                        "rx": rx
+                        "rx": rx,
+                        "intensities": message[1]
                     },
                 )
 
