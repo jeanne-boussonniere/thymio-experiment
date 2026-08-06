@@ -1,6 +1,6 @@
 import asyncio
-import os
 import socket
+import os
 import re
 
 from behaviours.obstacle_avoidance import ObstacleAvoidance
@@ -21,7 +21,7 @@ class SCAExperiment:
 
         self.robot_id = socket.gethostname()
         self.short_id = int(re.sub(r"\D", "", self.robot_id))
-
+        
         coordinator_ip = os.getenv("SWARM_COORDINATOR", "10.15.2.63")
         coordinator_port = int(os.getenv("SWARM_COORDINATOR_PORT", "9100"))
         self.client = SwarmClient(coordinator_ip, coordinator_port)
@@ -64,15 +64,14 @@ class SCAExperiment:
 
             await self.robot.send(self.short_id)
 
-            message = None
             try:
-                message = await self.robot.receive()
-            except (TypeError, ValueError):
-                message = None
+                rx_raw, intensities, _, _ = await self.robot.receive()
+            except Exception:
+                rx_raw, intensities = [0], [0, 0, 0, 0, 0, 0, 0]
 
-            rx = int(message[0]) if message else None
+            rx = int(rx_raw[0]) 
 
-            if rx:  
+            if rx > 0:  
                 self.nearby_ids[rx] = self.tick
 
             delete = []
@@ -117,7 +116,7 @@ class SCAExperiment:
                         "authority": authority,
                         "buffer": buffer,
                         "rx": rx,
-                        "intensities": message[1]
+                        "intensities": intensities
                     },
                 )
 
