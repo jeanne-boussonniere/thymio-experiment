@@ -22,7 +22,6 @@ class SCAExperiment:
         self.robot_id = socket.gethostname()
         self.short_id = int(re.sub(r"\D", "", self.robot_id))
 
-
         coordinator_ip = os.getenv("SWARM_COORDINATOR", "10.15.2.63")
         coordinator_port = int(os.getenv("SWARM_COORDINATOR_PORT", "9100"))
         self.client = SwarmClient(coordinator_ip, coordinator_port)
@@ -61,7 +60,7 @@ class SCAExperiment:
             left, right = self.obstacle_avoidance.step_motion(prox)
             
             ground = await self.robot.proximity_ground_reflected()
-            patch, _ = self.color_recognition.find_color(ground)
+            patch, _ = self.color_recognition.filtered_color(ground)
 
             await self.robot.send(self.short_id)
 
@@ -116,7 +115,8 @@ class SCAExperiment:
                         "quality": quality,
                         "rarity": rarity,
                         "authority": authority,
-                        "buffer": buffer
+                        "buffer": buffer,
+                        "rx": rx
                     },
                 )
 
