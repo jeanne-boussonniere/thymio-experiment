@@ -66,7 +66,8 @@ class SCAExperiment:
 
             try:
                 rx_raw, intensities, _, _ = await self.robot.receive()
-            except Exception:
+            except Exception as e:
+                print(f"Erreur cachee dans receive() : {repr(e)}")
                 rx_raw, intensities = [0], [0, 0, 0, 0, 0, 0, 0]
 
             rx = int(rx_raw[0]) 
