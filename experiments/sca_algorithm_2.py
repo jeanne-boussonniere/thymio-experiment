@@ -5,11 +5,12 @@ import re
 
 from behaviours.obstacle_avoidance import ObstacleAvoidance
 from behaviours.color_recognition import ColorRecognition
-from behaviours.sca_algorithm import SCA 
+from behaviours.sca_algorithm_2 import SCA 
 from swarm_platform.controller.client import SwarmClient
 from utils.communication import SwarmUDPManager 
 
 class SCAExperiment:
+    """ Implement the SCA algorithm using the Optitrack system to get the position of the robots and their distance to each other."""
 
     def __init__(self, robot, config=None, logger=None):
         self.robot = robot
@@ -20,7 +21,6 @@ class SCAExperiment:
         self.paused = False
 
         self.robot_id = socket.gethostname()
-        self.short_id = int(re.sub(r"\D", "", self.robot_id))
         
         coordinator_ip = os.getenv("SWARM_COORDINATOR", "10.15.2.63")
         coordinator_port = int(os.getenv("SWARM_COORDINATOR_PORT", "9100"))
@@ -34,8 +34,7 @@ class SCAExperiment:
         self.color_recognition = ColorRecognition()
         self.sca_algorithm = SCA()
 
-        self.nearby_ids = {}       
-        self.NEARBY_WINDOW = 20
+        self.radius = 0.5
 
         self.tick = 0
 
@@ -62,38 +61,29 @@ class SCAExperiment:
             ground = await self.robot.proximity_ground_reflected()
             patch, _ = self.color_recognition.filtered_color(ground)
 
-            await self.robot.send(self.short_id)
-
-            try:
-                rx_raw, intensities, _, _ = await self.robot.receive()
-            except Exception as e:
-                print(f"Erreur cachee dans receive() : {repr(e)}")
-                rx_raw, intensities = [0], [0, 0, 0, 0, 0, 0, 0]
-
-            rx = int(rx_raw[0]) 
-
-            if rx > 0:  
-                self.nearby_ids[rx] = self.tick
-
-            delete = []
-            for id, last_seen in self.nearby_ids.items():
-                if self.tick - last_seen > self.NEARBY_WINDOW:
-                    delete.append(id)
-
-            for id in delete:
-                del self.nearby_ids[id]
+            close = []
+            pose = await self.robot.get_global_pose()
+            if pose is not None:
+                my_x, my_y, _ = pose.position
+                poses = await self.robot.get_all_global_poses()
+                for id, p in poses.items():
+                    if id != self.robot_id:
+                        x, y, _ = p.position
+                        distance = ((my_x - x) ** 2 + (my_y - y) ** 2) ** 0.5
+                        if distance <= self.radius:
+                            close.append(id)
 
             received = self.udp.receive_messages()
 
-            nearby_received = {}
-            for i, msg in received.items():
-                if msg.get("id") in self.nearby_ids:
-                    nearby_received[i] = msg
+            neighbours = {}
+            for id, msg in received.items():
+                if msg.get("id") in close:
+                    neighbours[id] = msg
              
-            left_bias, right_bias, opinion, quality, rarity, authority, buffer = self.sca_algorithm.sca_tick(patch, nearby_received)
+            left_bias, right_bias, opinion, quality, rarity, authority, buffer = self.sca_algorithm.sca_tick(patch, neighbours)
 
             self.udp.send_to_all(
-                {"id": self.short_id, 
+                {"id": self.robot_id, 
                  "tick": self.tick,  
                  "opinion": opinion, 
                  "quality": quality, 
@@ -115,9 +105,7 @@ class SCAExperiment:
                         "quality": quality,
                         "rarity": rarity,
                         "authority": authority,
-                        "buffer": buffer,
-                        "rx": rx,
-                        "intensities": intensities
+                        "buffer": buffer
                     },
                 )
 

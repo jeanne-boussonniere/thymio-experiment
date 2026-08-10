@@ -1,6 +1,18 @@
-name: Decision Making Swarm Project
+name: Thymio Experiments
 
 version: 1.0
+
+tracking:
+  host: 10.0.10.4
+
+  hostname_map:
+    thymio-15: "RigidBody 19"
+    thymio-16: "RigidBody 21"
+    thymio-17: "RigidBody 22"
+    thymio-18: "RigidBody 13"
+    thymio-19: "RigidBody 17"
+    thymio-20: "RigidBody 18"
+    thymio-21: "RigidBody 14"
 
 experiments:
   obstacle_avoidance:
@@ -9,5 +21,8 @@ experiments:
     class: experiments.color_recognition.ColorRecognitionExperiment
   messaging_test:
     class: experiments.messaging_test.MessagingTestExperiment
-  sca_algorithm:
-    class: experiments.sca_algorithm.SCAExperiment
+  sca_algorithm_1:
+    class: experiments.sca_algorithm_1.SCAExperiment
+  sca_algorithm_2:
+    class: experiments.sca_algorithm_2.SCAExperiment
+    tracking: true
