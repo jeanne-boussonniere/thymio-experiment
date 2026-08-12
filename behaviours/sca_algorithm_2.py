@@ -31,7 +31,6 @@ class SCA :
         self.kappa = 0
         self.cascade_active = False
         self.buffer = {}
-        self.velocity_bias = (0.0, 0.0)
         self.tick = 0
         
 
@@ -141,10 +140,8 @@ class SCA :
         else:
             dir_x, dir_y = 0.0, 0.0
 
-        bx, by = self.velocity_bias
-        bx += self.ETA_ADOPT * dir_x
-        by += self.ETA_ADOPT * dir_y
-        self.velocity_bias = (bx, by)
+        bx = self.ETA_ADOPT * dir_x
+        by = self.ETA_ADOPT * dir_y
 
         angle = math.atan2(by, bx)  
         turn_strength = min(abs(angle) / math.pi, 1.0)

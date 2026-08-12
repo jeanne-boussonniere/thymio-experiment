@@ -34,7 +34,6 @@ class SCAExperiment:
         self.sca_algorithm = SCA()
 
         self.radius = 0.5
-        self.max_prox = 800
 
         self.tick = 0
 
@@ -76,7 +75,8 @@ class SCAExperiment:
              
             left_bias, right_bias, opinion, quality, rarity, authority, buffer = self.sca_algorithm.sca_tick(patch, neighbours)
 
-            if max(prox[:5]) < self.max_prox :
+            avoidance_active = (self.obstacle_avoidance.turn_direction is not None or self.obstacle_avoidance.backward)
+            if not avoidance_active:
                 left += left_bias
                 right += right_bias
 
@@ -96,6 +96,7 @@ class SCAExperiment:
                     state={"proximity": prox,
                            "reflected": ground},
                     command={
+                        "tick": self.tick,
                         "left_motor": left,
                         "right_motor": right,
                         "patch": patch,
@@ -103,7 +104,8 @@ class SCAExperiment:
                         "quality": quality,
                         "rarity": rarity,
                         "authority": authority,
-                        "buffer": buffer
+                        "buffer": buffer,
+                        "neighbours": nearby_hostnames
                     },
                 )
 
