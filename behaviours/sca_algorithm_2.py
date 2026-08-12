@@ -35,7 +35,6 @@ class SCA :
         
 
     def sca_tick(self, patch, neighbours):
-        self.tick += 1
         self.patch = patch
 
         # Step 1 - detect patch & measure quality
@@ -66,6 +65,8 @@ class SCA :
         left_bias, right_bias = self._measure_bias(neighbours)
         
         self._change_opinion(neighbours)
+        
+        self.tick += 1
 
         return left_bias, right_bias, self.opinion, self.quality, self.rho, self.authority, self.buffer
 

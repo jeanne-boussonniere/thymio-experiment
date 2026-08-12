@@ -62,6 +62,7 @@ class SCAExperiment:
 
             nearby_hostnames = await self.robot.get_neighbours(self.radius)
             relative_poses = await self.robot.get_relative_poses(nearby_hostnames)
+            my_pose = await self.robot.get_global_pose()
 
             received = self.udp.receive_messages()
 
@@ -105,7 +106,8 @@ class SCAExperiment:
                         "rarity": rarity,
                         "authority": authority,
                         "buffer": buffer,
-                        "neighbours": nearby_hostnames
+                        "neighbours": nearby_hostnames,
+                        "position": my_pose.position.tolist() if my_pose else None,
                     },
                 )
 
