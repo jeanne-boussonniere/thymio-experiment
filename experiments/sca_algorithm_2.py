@@ -107,7 +107,7 @@ class SCAExperiment:
                         "authority": authority,
                         "buffer": buffer,
                         "neighbours": nearby_hostnames,
-                        "position": my_pose.position.tolist() if my_pose else None,
+                        "position": my_pose.position if my_pose else None,
                     },
                 )
 
