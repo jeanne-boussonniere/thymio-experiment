@@ -10,7 +10,8 @@ from swarm_platform.controller.client import SwarmClient
 from utils.communication import SwarmUDPManager 
 
 class SCAExperiment:
-    """ Implement the SCA algorithm using the IR communication of the Thymio robots to estimate the neighbours"""
+    """ Implement the SCA algorithm using the IR communication of the Thymio robots to estimate the neighbours.
+    The velocity bias is not implemented in this version"""
 
     def __init__(self, robot, config=None, logger=None):
         self.robot = robot
@@ -66,12 +67,10 @@ class SCAExperiment:
             await self.robot.send(self.short_id)
 
             try:
-                rx_raw, intensities, _, _ = await self.robot.receive()
+                rx, intensities, _, _ = await self.robot.receive()
             except Exception as e:
                 print(f"Erreur cachee dans receive() : {repr(e)}")
-                rx_raw, intensities = [0], [0, 0, 0, 0, 0, 0, 0]
-
-            rx = int(rx_raw[0]) 
+                rx, intensities = 0, [0, 0, 0, 0, 0, 0, 0]
 
             if rx > 0:  
                 self.nearby_ids[rx] = self.tick

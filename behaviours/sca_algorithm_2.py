@@ -1,8 +1,6 @@
 import random
 import math
 
-from matplotlib.pylab import norm
-
 class SCA :
     PATCHES = [
         {"index": 0, "quality": 0.30, "name": "black"},  
@@ -33,6 +31,7 @@ class SCA :
         self.kappa = 0
         self.cascade_active = False
         self.buffer = {}
+        self.velocity_bias = (0.0, 0.0)
         self.tick = 0
         
 
@@ -64,10 +63,12 @@ class SCA :
         else:
             self.authority = 0.0
             self.cascade_active = False
+
+        left_bias, right_bias = self._measure_bias(neighbours)
         
         self._change_opinion(neighbours)
 
-        return 0, 0, self.opinion, self.quality, self.rho, self.authority, self.buffer
+        return left_bias, right_bias, self.opinion, self.quality, self.rho, self.authority, self.buffer
 
     
     def _measure_quality(self, patch):
@@ -120,4 +121,39 @@ class SCA :
             self.authority = 0.0
             self.quality = quality_n
 
+    def _measure_bias(self, neighbours):
+        sum_x, sum_y = 0.0, 0.0
+        for n in neighbours.values():
+            if n["authority"] <= 0.0:
+                continue
+            distance = n.get("distance")
+            bearing = n.get("bearing")
+            if distance is None or bearing is None:
+                continue
+
+            weight = n["authority"] * math.exp(-self.OMEGA_POS * distance)
+            sum_x += weight * math.cos(bearing)
+            sum_y += weight * math.sin(bearing)
+
+        norm = math.hypot(sum_x, sum_y)
+        if norm > 0:
+            dir_x, dir_y = sum_x / norm, sum_y / norm
+        else:
+            dir_x, dir_y = 0.0, 0.0
+
+        bx, by = self.velocity_bias
+        bx += self.ETA_ADOPT * dir_x
+        by += self.ETA_ADOPT * dir_y
+        self.velocity_bias = (bx, by)
+
+        angle = math.atan2(by, bx)  
+        turn_strength = min(abs(angle) / math.pi, 1.0)
+        extra = turn_strength * 0.5 * self.SPEED 
+
+        if angle > 0:
+            left_bias, right_bias = -extra, extra
+        else:
+            left_bias, right_bias = extra, -extra
+
+        return left_bias, right_bias
 

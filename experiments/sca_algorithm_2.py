@@ -1,7 +1,6 @@
 import asyncio
 import socket
 import os
-import re
 
 from behaviours.obstacle_avoidance import ObstacleAvoidance
 from behaviours.color_recognition import ColorRecognition
@@ -35,6 +34,7 @@ class SCAExperiment:
         self.sca_algorithm = SCA()
 
         self.radius = 0.5
+        self.max_prox = 800
 
         self.tick = 0
 
@@ -61,26 +61,24 @@ class SCAExperiment:
             ground = await self.robot.proximity_ground_reflected()
             patch, _ = self.color_recognition.filtered_color(ground)
 
-            close = []
-            pose = await self.robot.get_global_pose()
-            if pose is not None:
-                my_x, my_y, _ = pose.position
-                poses = await self.robot.get_all_global_poses()
-                for id, p in poses.items():
-                    if id != self.robot_id:
-                        x, y, _ = p.position
-                        distance = ((my_x - x) ** 2 + (my_y - y) ** 2) ** 0.5
-                        if distance <= self.radius:
-                            close.append(id)
+            nearby_hostnames = await self.robot.get_neighbours(self.radius)
+            relative_poses = await self.robot.get_relative_poses(nearby_hostnames)
 
             received = self.udp.receive_messages()
 
             neighbours = {}
             for id, msg in received.items():
-                if msg.get("id") in close:
+                if msg.get("id") in relative_poses:
+                    rel = relative_poses[msg.get("id")]
+                    msg["distance"] = rel.distance
+                    msg["bearing"] = rel.bearing
                     neighbours[id] = msg
              
             left_bias, right_bias, opinion, quality, rarity, authority, buffer = self.sca_algorithm.sca_tick(patch, neighbours)
+
+            if max(prox[:5]) < self.max_prox :
+                left += left_bias
+                right += right_bias
 
             self.udp.send_to_all(
                 {"id": self.robot_id, 
@@ -91,7 +89,7 @@ class SCAExperiment:
                 self.target_ips
             )
             
-            await self.robot.drive(left + left_bias, right + right_bias)
+            await self.robot.drive(left, right)
 
             if self.logger:
                 self.logger.log(
