@@ -65,6 +65,7 @@ class QuorumSensingExperiment:
             patch, _ = self.color_recognition.filtered_color(ground)
         
             nearby_hostnames = await self.robot.get_neighbours(self.radius)
+            my_pose = await self.robot.get_global_pose()
 
             received = self.udp.receive_messages()
             
@@ -94,7 +95,8 @@ class QuorumSensingExperiment:
                         "right_motor": right,
                         "patch": patch,
                         "opinion": opinion,
-                        "neighbours": nearby_hostnames
+                        "neighbours": nearby_hostnames,
+                        "position": my_pose.position if my_pose else None
                     },
                 )
 

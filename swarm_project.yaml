@@ -8,9 +8,9 @@ tracking:
   hostname_map:
     thymio-11: "RigidBody 19"
     thymio-14: "RigidBody 17"
-    thymio-16: "RigidBody 21"
+    thymio-16: "RigidBody 24"
     thymio-12: "RigidBody 18"
-    thymio-21: "RigidBody 14"
+    thymio-21: "RigidBody 23"
 
 experiments:
   obstacle_avoidance:
