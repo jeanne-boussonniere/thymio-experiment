@@ -11,9 +11,12 @@ from utils.communication import SwarmUDPManager
 class QuorumSensingExperiment:
     """ 
     Implement the quorum sensing algorithm.
-    The robots move around the arena using the obstacle avoidance algorithm and use the color recognition to know the patch they are on.
+    The robots move around the arena using the obstacle avoidance algorithm.
+    They use the color recognition to know the patch they are on.
     The Optitrack system allows to get the position of the robots and their neighbours.
     The robots communicate using Wi-Fi to send their opinion to their neighbours.
+
+    Requires `tracking: true` for this experiment in swarm_project.yaml.
     """
     def __init__(self, robot, config=None, logger=None):
             self.robot = robot

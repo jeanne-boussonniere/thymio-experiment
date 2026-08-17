@@ -4,6 +4,9 @@ from behaviours.obstacle_avoidance import ObstacleAvoidance
 from behaviours.color_recognition import ColorRecognition
 
 class ColorRecognitionExperiment:
+    """
+    Obstacle avoidance driving combined with floor patch color detection.
+    """
 
     def __init__(self, robot, config=None, logger=None):
         self.robot = robot

@@ -1,4 +1,11 @@
 class ColorRecognition:
+    """
+    Detects which patch the robot is standing on, from the
+    two ground reflectance sensors.
+
+    A candidate patch must be observed on 3 consecutive reads before 
+    it replaces `current_patch`, to filter out sensor noise during transitions.
+    """
     PATCHES = [
         {"index": 0, "average": 60, "eps": 14, "name": "black"},  
         {"index": 1, "average": 903, "eps": 11, "name": "white"},  
@@ -12,6 +19,12 @@ class ColorRecognition:
         self.count = 0
 
     def find_color(self, ground):
+        """
+        Patch detection from a ground sensor reading.
+
+        ground: [sensor_left, sensor_right] reflectance values.
+        Returns: (patch_index, patch_name), or (-1, "floor") if no patch matches 
+        """
         reflected = ground[0] + ground[1]
         for i in range(3):
             if reflected < 2*(self.PATCHES[i]["average"] + 2*self.PATCHES[i]["eps"]) and reflected > 2*(self.PATCHES[i]["average"] - 2*self.PATCHES[i]["eps"]):
@@ -19,6 +32,11 @@ class ColorRecognition:
         return -1,"floor"
 
     def filtered_color(self,ground):
+        """
+        Only updates current_patch/current_color once the same candidate has 
+        been seen 3 times in a row.
+        Returns: (current_patch, current_color).
+        """
         patch, name = self.find_color(ground)
         if patch == self.candidate:
             self.count += 1

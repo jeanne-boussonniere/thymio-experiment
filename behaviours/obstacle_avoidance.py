@@ -1,4 +1,25 @@
 class ObstacleAvoidance:
+    """
+    Obstacle avoidance using the Thymio's
+    7 horizontal proximity sensors (5 front, 2 back).
+
+    Two states:
+      - normal driving: goes straight on a clear path, or turns away from
+        the closest obstacle (turn direction held for a few steps to avoid
+        oscillations), until either the path clears or the turn gets too
+        long / an obstacle gets too close, both of which trigger backward.
+      - backward escape: reverse while the rear stays clear, then
+        pivot away from the closest obstacle, then go back to normal driving.
+
+    Parameters:
+      wheel_velocity (200): base wheel speed
+      min_prox (800): threshold to start turning away from an obstacle
+      max_prox (2500): threshold to trigger an immediate backward move
+      max_side (3500): threshold on left and right together that also
+        triggers backward
+      max_turn (15): max steps held in a turn before forcing backward
+      max_backward (10): steps spent reversing 
+    """
 
     def __init__(
         self,
@@ -18,6 +39,14 @@ class ObstacleAvoidance:
 
 
     def step_motion(self, prox):
+        """
+        Compute the next (left, right) wheel velocities from a proximity
+        reading.
+
+        prox: list of 7 horizontal proximity sensor values (indices 0-4
+        front, 5-6 back). Higher values mean closer obstacle.
+        Returns: (left_velocity, right_velocity).
+        """
         left = prox[0] + prox[1]
         right = prox[3] + prox[4]
         closer = max(prox[:5])
@@ -88,5 +117,9 @@ class ObstacleAvoidance:
                 return self.wheel_velocity, self.wheel_velocity
 
     def _factor(self, closer):
+        """
+        Normalise the closest obstacle reading to [0, 1] between
+        min_prox and 4500, used to scale how sharply the robot turns.
+        """
         factor = (closer - self.min_prox) / (4500 - self.min_prox)
         return max(0.0, min(1.0, factor))

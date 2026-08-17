@@ -9,7 +9,14 @@ from swarm_platform.controller.client import SwarmClient
 from utils.communication import SwarmUDPManager 
 
 class SCAExperiment:
-    """ Implement the SCA algorithm using the Optitrack system to get the position of the robots and their distance to each other."""
+    """
+    Implements the SCA algorithm using the Optitrack tracking system to 
+    get each robot's position and its distance/bearing to nearby neighbours. 
+    Includes the velocity bias that steers the robot towards authoritative 
+    neighbours (applied only when obstacle avoidance is not currently active).
+
+    Requires `tracking: true` for this experiment in swarm_project.yaml.
+    """
 
     def __init__(self, robot, config=None, logger=None):
         self.robot = robot

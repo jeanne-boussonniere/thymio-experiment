@@ -3,6 +3,9 @@ import asyncio
 from behaviours.obstacle_avoidance import ObstacleAvoidance
 
 class ObstacleAvoidanceExperiment:
+    """
+    Drives the robot with ObstacleAvoidance only.
+    """
 
     def __init__(self, robot, config=None, logger=None):
         self.robot = robot

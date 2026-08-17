@@ -1,8 +1,9 @@
 class QuorumSensing:
     """ 
-    Implement the quorum sensing algorithm which rely on majority voting.
-    The robots might get their first opinion from the first patch they encounter.
-    Then they may change their opinion if more than 60% of their neighbours share the same opinion.
+    Implements the quorum sensing algorithm which relies on majority voting.
+    The robots might get their first opinion from the first patch they 
+    encounter. Then they may change their opinion if more than 60% of 
+    their neighbours share the same opinion.
     """
 
     QUORUM_THRESHOLD = 0.6
@@ -14,6 +15,14 @@ class QuorumSensing:
             self.opinion = -1
 
     def tick(self,patch, neighbours):
+        """
+        Run one quorum-sensing tick.
+
+        patch: index of the floor patch currently detected (-1 if none).
+        neighbours: dict {id: {"id","tick","opinion"}} of neighbours.
+
+        Returns: the robot's current opinion.
+        """
         self.patch = patch
         if patch != -1 :
             if self.opinion == -1:

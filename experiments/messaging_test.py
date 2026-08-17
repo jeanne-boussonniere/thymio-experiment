@@ -7,6 +7,10 @@ from utils.communication import SwarmUDPManager
  
  
 class MessagingTestExperiment:
+    """
+    Broadcasts a heartbeat (robot_id, tick) over UDP to every other robot 
+    known by swarm_platform and logs what comes back, to verify swarm connectivity.
+    """
  
     def __init__(self, robot, config=None, logger=None):
         self.robot = robot
