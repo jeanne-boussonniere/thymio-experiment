@@ -12,7 +12,7 @@ tracking:
     thymio-12: "RigidBody 18"
     thymio-21: "RigidBody 23"
     thymio-22: "RigidBody 21"
-    thymio-24: "RigidBody 14"
+    thymio-23: "RigidBody 14"
     thymio-09: "RigidBody 25"
     thymio-08: "RigidBody 22"
     thymio-07: "RigidBody 13"
