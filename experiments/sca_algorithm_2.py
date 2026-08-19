@@ -40,7 +40,7 @@ class SCAExperiment:
         self.color_recognition = ColorRecognition()
         self.sca_algorithm = SCA()
 
-        self.radius = 0.5
+        self.radius = 0.3
 
         self.tick = 0
 

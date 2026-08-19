@@ -43,7 +43,7 @@ class ColorRecognition:
             return 0, "black"
         elif reflected < 550:
             return 2, "brown"
-        elif reflected > 1860:
+        elif reflected > 1840:
             return 1, "white"
         else:
             return -1, "floor"
@@ -54,7 +54,7 @@ class ColorRecognition:
         been seen 3 times in a row.
         Returns: (current_patch, current_color).
         """
-        patch, name = self.find_color(ground)
+        patch, name = self.new_find_color(ground)
         if patch == self.candidate:
             self.count += 1
         else:
