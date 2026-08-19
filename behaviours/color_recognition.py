@@ -31,6 +31,23 @@ class ColorRecognition:
                 return i,self.PATCHES[i]["name"]
         return -1,"floor"
 
+    def new_find_color(self, ground):
+        """
+        Patch detection from a ground sensor reading. Adapted to the change in the reading by the end of the experiment. 
+
+        ground: [sensor_left, sensor_right] reflectance values.
+        Returns: (patch_index, patch_name), or (-1, "floor") if no patch matches 
+        """
+        reflected = ground[0] + ground[1]
+        if reflected < 300:
+            return 0, "black"
+        elif reflected < 550:
+            return 2, "brown"
+        elif reflected > 1860:
+            return 1, "white"
+        else:
+            return -1, "floor"
+
     def filtered_color(self,ground):
         """
         Only updates current_patch/current_color once the same candidate has 
