@@ -40,7 +40,7 @@ class QuorumSensingExperiment:
             self.color_recognition = ColorRecognition()
             self.quorum_sensing = QuorumSensing()
 
-            self.radius = 0.3
+            self.radius = 0.5
 
             self.tick = 0
 

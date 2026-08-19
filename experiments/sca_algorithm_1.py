@@ -71,10 +71,10 @@ class SCAExperiment:
             await self.robot.send(self.short_id)
 
             try:
-                rx, intensities, _, _ = await self.robot.receive()
+                rx, _, _, _ = await self.robot.receive()
             except Exception as e:
                 print(f"Hidden error in receive() : {repr(e)}")
-                rx, intensities = 0, [0, 0, 0, 0, 0, 0, 0]
+                rx = 0
 
             if rx > 0:  
                 self.nearby_ids[rx] = self.tick
@@ -120,8 +120,7 @@ class SCAExperiment:
                         "rarity": rarity,
                         "authority": authority,
                         "buffer": buffer,
-                        "rx": rx,
-                        "intensities": intensities
+                        "rx": rx
                     },
                 )
 
