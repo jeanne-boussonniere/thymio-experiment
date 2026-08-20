@@ -112,6 +112,7 @@ class SCAExperiment:
                     state={"proximity": prox,
                            "reflected": ground},
                     command={
+                        "tick": self.tick,
                         "left_motor": left,
                         "right_motor": right,
                         "patch": patch,
