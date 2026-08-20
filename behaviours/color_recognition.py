@@ -8,7 +8,7 @@ class ColorRecognition:
     """
     PATCHES = [
         {"index": 0, "average": 60, "eps": 14, "name": "black"},  
-        {"index": 1, "average": 903, "eps": 11, "name": "white"},  
+        {"index": 1, "average": 853, "eps": 21, "name": "white"},  
         {"index": 2, "average": 145, "eps": 24, "name": "brown"}   
     ]
 
