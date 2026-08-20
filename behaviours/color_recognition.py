@@ -54,7 +54,7 @@ class ColorRecognition:
         been seen 3 times in a row.
         Returns: (current_patch, current_color).
         """
-        patch, name = self.new_find_color(ground)
+        patch, name = self.find_color(ground)
         if patch == self.candidate:
             self.count += 1
         else:
